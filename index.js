@@ -31,7 +31,13 @@ const generateId = () => {
     const maxId = persons.length > 0
         ? Math.max(...persons.map(n => n.id))
         : 0
-    return maxId + 1
+    
+    const minId = maxId + 1
+    const maxIdLimit = 100000;
+
+    const randomId = Math.random() * (maxIdLimit - minId) + minId;
+    
+    return Math.floor(randomId);
 }
 
 app.get('/', (request, response) => {
@@ -58,6 +64,15 @@ app.delete('/api/persons/:id', (request, response) => {
     persons = persons.filter(person => person.id !== id)
 
     response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+    const person = request.body
+    person.id = generateId()
+
+    persons = persons.concat(person)
+
+    response.json(person)
 })
 
 app.get('/info', (request, response) => {
